@@ -11,6 +11,8 @@ contract MemePortal {
     uint256 id;
 
     event NewMeme(uint256 id, address indexed from, uint256 timestamp, string message);
+    event ApprovedMemes(uint256[] memesApproved);
+    event TipsWithdrawn(uint256 balance);
 
     struct Meme {
         address creator;
@@ -38,6 +40,7 @@ contract MemePortal {
         // TODO: use SafeMath for storage variable
         balances[memeCreator] += msg.value;       
         approvedMemes[msg.sender].push(memeId);
+        emit ApprovedMemes(approvedMemes[msg.sender]);
     }
 
     function withdrawTips() external payable {
@@ -51,6 +54,7 @@ contract MemePortal {
             "Failed to withdraw money from contract."
         );
         balances[msg.sender] = 0;
+        emit TipsWithdrawn(balances[msg.sender]);
     }
 
     function getAllMemes() public view returns (Meme[] memory) {

@@ -99,5 +99,34 @@ describe("MemePortal contract", () => {
       let addrBalanceAfter = await ethers.provider.getBalance(owner.address);
       expect(parseInt(addrBalanceAfter)).to.greaterThan(parseInt(addrBalanceBefore));
     });
+
+    it("should emit ApprovedMemes successfully", async () => {
+      await memeContract.deployed();
+
+      await memeContract.createMeme("test2");
+      const tx = await memeContract.connect(addr1).approveMeme(1, owner.address, {value: ethers.utils.parseEther('0.0001')});
+      const receipt = await tx.wait();
+      expect(receipt.events.length).to.equal(1);
+      expect(receipt.events[0].event).to.equal("ApprovedMemes");
+
+      const eventArgs = receipt.events[0].args;
+      expect(eventArgs["0"].length).to.equal(1);
+      expect(eventArgs["0"][0]).to.equal(1);
+    });
+
+    it("should emit TipsWithdrawn successfully", async () => {
+      await memeContract.deployed();
+
+      await memeContract.createMeme("test2");
+      await memeContract.connect(addr1).approveMeme(1, owner.address, {value: ethers.utils.parseEther('0.0001')});
+      
+      const tx = await memeContract.withdrawTips();
+      const receipt = await tx.wait();
+      expect(receipt.events.length).to.equal(1);
+      expect(receipt.events[0].event).to.equal("TipsWithdrawn");
+
+      const eventArgs = receipt.events[0].args;
+      expect(eventArgs["0"]).to.equal(0);
+    });
   });
 });

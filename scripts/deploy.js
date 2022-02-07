@@ -1,12 +1,12 @@
 const main = async () => {
-  const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-  const waveContract = await waveContractFactory.deploy({
+  const memeContractFactory = await hre.ethers.getContractFactory("MemePortal");
+  const memeContract = await memeContractFactory.deploy({
     value: hre.ethers.utils.parseEther("0.001"),
   });
 
-  await waveContract.deployed();
+  await memeContract.deployed();
 
-  console.log("WavePortal address: ", waveContract.address);
+  console.log("MemePortal address: ", memeContract.address);
 };
 
 const runMain = async () => {
